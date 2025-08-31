@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: gestion-projets-qoder
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./prisma/db/custom.db
+      - key: PORT
+        generateValue: true
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/prisma/db
+      sizeGB: 1
