@@ -2345,7 +2345,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-            {filteredProjects.map((project) => (
+            {filteredProjects.slice(0, 6).map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}
