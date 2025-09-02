@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Search, Star, Plus, Edit, Trash2, ExternalLink, FolderOpen, ChevronDown, Moon, Sun, Play, Pause, Clock, RotateCcw, Timer, TrendingUp, BarChart3, Calendar } from 'lucide-react'
+import { Search, Star, Plus, Edit, Trash2, ExternalLink, FolderOpen, ChevronDown, Moon, Sun, Play, Pause, Clock, RotateCcw, Timer, TrendingUp, BarChart3, Calendar, Download, Upload } from 'lucide-react'
 import { Project } from '@prisma/client'
 
 interface ProjectCardProps {
@@ -1319,6 +1319,69 @@ export default function Home() {
     }
   }
 
+  // Fonction d'export des projets
+  const handleExportProjects = async () => {
+    try {
+      const response = await fetch('/api/projects/export')
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.style.display = 'none'
+        a.href = url
+        a.download = `projets-export-${new Date().toISOString().split('T')[0]}.json`
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+        alert('Export réussi ! Le fichier a été téléchargé.')
+      } else {
+        alert('Erreur lors de l\'export')
+      }
+    } catch (error) {
+      console.error('Erreur export:', error)
+      alert('Erreur lors de l\'export')
+    }
+  }
+
+  // Fonction d'import des projets
+  const handleImportProjects = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      try {
+        const content = e.target?.result as string
+        const data = JSON.parse(content)
+        
+        const response = await fetch('/api/projects/import', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        
+        const result = await response.json()
+        
+        if (result.success) {
+           alert(`Import réussi ! ${result.importedCount} projets importés.`)
+           // Recharger les projets
+           loadProjects()
+        } else {
+          alert('Erreur lors de l\'import: ' + result.error)
+        }
+      } catch (error) {
+        console.error('Erreur import:', error)
+        alert('Erreur lors de l\'import. Vérifiez le format du fichier.')
+      }
+    }
+    reader.readAsText(file)
+    // Reset input
+    event.target.value = ''
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -1351,6 +1414,37 @@ export default function Home() {
                   <Moon className="h-4 w-4 text-gray-600" />
                 )}
               </Button>
+              <Button
+                onClick={handleExportProjects}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-green-50 dark:hover:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300"
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+              
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportProjects}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  id="import-file"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300"
+                  asChild
+                >
+                  <label htmlFor="import-file" className="cursor-pointer">
+                    <Upload className="h-4 w-4" />
+                    Import
+                  </label>
+                </Button>
+              </div>
+              
               <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
                 <DialogTrigger asChild>
                   <Button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200">

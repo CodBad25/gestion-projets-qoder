@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     buildCommand: npm ci && npx prisma db push && node scripts/init-db.mjs && npm run build
-    startCommand: npx tsx server.ts
-    healthCheckPath: /
+    startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
