@@ -577,7 +577,7 @@ export default function Home() {
   const getSmartSuggestions = () => {
     if (projects.length === 0) return []
 
-    const suggestions = []
+    const suggestions: Array<{ type: string; value: string; count: number; label: string }> = []
 
     // Suggérer les outils les plus utilisés
     const toolCounts = new Map<string, number>()
@@ -1013,7 +1013,7 @@ export default function Home() {
 
       const isRunning = !project.isRunning
       let newTimeSpent = project.timeSpent || 0
-      let lastStarted = null
+      let lastStarted: Date | null = null
 
       // Si on démarre un timer, arrêter tous les autres timers en cours
       if (isRunning) {
@@ -1106,7 +1106,7 @@ export default function Home() {
       if (project) {
         const isRunning = !project.isRunning
         let newTimeSpent = project.timeSpent || 0
-        let lastStarted = null
+        let lastStarted: Date | null = null
 
         if (isRunning) {
           lastStarted = new Date()
@@ -1745,7 +1745,7 @@ export default function Home() {
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">Déclarable</div>
               </div>
-              {timeStats.currentlyRunningProject && (
+              {projects.some(p => p.isRunning) && (
                 <div className="text-center">
                   <div className="text-lg font-semibold text-orange-600 dark:text-orange-400 animate-pulse">
                     ●
