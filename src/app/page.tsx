@@ -2345,7 +2345,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-            {filteredProjects.slice(0, 6).map((project) => (
+            {filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}
@@ -2360,15 +2360,7 @@ export default function Home() {
               />
             ))}
             </div>
-            
-            {/* Pagination ou indication pour plus de projets */}
-            {filteredProjects.length > 6 && (
-              <div className="text-center mt-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {filteredProjects.length - 6} projet(s) de plus - Faites défiler pour voir la suite
-                </p>
-              </div>
-            )}
+
           </div>
         )}
       </main>
