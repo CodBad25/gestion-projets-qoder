@@ -3,8 +3,8 @@ services:
     name: gestion-projets-qoder
     env: node
     plan: free
-    buildCommand: npm ci && npx prisma db push && node scripts/init-db.js && npm run build
-    startCommand: npm start
+    buildCommand: npm ci && npx prisma db push && node scripts/init-db.mjs && npm run build
+    startCommand: npx tsx server.ts
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
