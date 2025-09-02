@@ -10,7 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        value: file:./prisma/db/custom.db
+        value: file:/opt/render/project/src/prisma/db/custom.db
       - key: PORT
         generateValue: true
     disk:
