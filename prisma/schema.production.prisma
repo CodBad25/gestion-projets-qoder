@@ -8,14 +8,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Project {
   id          String   @id @default(cuid())
   name        String
   description String?
-  tools       String?
-  type        String   // "pro" ou "perso"
-  platform    String   // "pc", "mobile", "web"
-  status      String   // "idea", "dev", "done", "pause"
+  tools       String   // Stocke les outils séparés par des virgules
+  resultLink  String?
+  filesLink   String?
+  type        String   @default("perso") // "perso" ou "pro"
+  platform    String   @default("pc") // "pc" ou "mac"
+  keywords    String?  // Stocke les mots-clés séparés par des virgules
+  isFavorite  Boolean  @default(false)
+  status      String   @default("idea") // "idea", "in_progress", "completed", "abandoned"
+  timeSpent   Int      @default(0) // Temps passé en secondes
+  isRunning   Boolean  @default(false) // Si le timer est en cours
+  lastStarted DateTime? // Quand le timer a été démarré
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
