@@ -1,0 +1,23 @@
+// Schéma Prisma pour la production (PostgreSQL)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  tools       String?
+  type        String   // "pro" ou "perso"
+  platform    String   // "pc", "mobile", "web"
+  status      String   // "idea", "dev", "done", "pause"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("projects")
+}
